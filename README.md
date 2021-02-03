@@ -1,3 +1,8 @@
+通过http get请求 文件路径  即可得到onlyoffice预览效果
+本文档来自 https://gitee.com/ideayp/leaf-onlyoffice
+之前获取文件类型有误，经过修改重新发布jar包方便使用。
+感谢@ideayp的贡献！
+
 # Leaf-only office
 ## 目标
   **拿来即用**
@@ -8,7 +13,7 @@
 
 添加参数--only-office.doc-service-api-url 修改为:only office提供的服务地址
 
-`java -jar leaf-onlyOffice.jar --only-office.doc-service=http://192.168.25.138:9001`
+`java -jar leaf-onlyOffice.jar --only-office.doc-service=http://10.10.20.67:9000`
 
 > 项目运行会向`/logs/onlyOffice`文件夹中写入对应的日志 默认启动级别为dev
 
@@ -43,4 +48,19 @@ url 必须urlEncode编码 防止中文乱码
 
 
 > 更多功能请前往[OnlyOffice](https://api.onlyoffice.com)查看
+
+
+软件成功调用输出日志：
+其中
+"http://10.10.20.67:9000" onlyoffice部署的地址
+"http://10.10.12.103:8080/api/alien/preview/0e787e06-916b-4126-4bad-75307d751071/接口文档v3.2.docx?downloadTokenUuid=280cbd41-0c2d-420b-7515-22b215389e55"
+这个是需要解析的远程文件路径url
+"http://10.10.13.55:8080" leaf-onlyOffice项目部署地址。
+
+```
+only office config:{"docServiceApiUrl":"http://10.10.20.67:9000/web-apps/apps/api/documents/api.js","document":{"fileType":"docx","key":"ONUUkLblKP","title":"接口文档v3.2.docx","url":"http://10.10.12.103:8080/api/alien/preview/0e787e06-916b-4126-4bad-75307d751071/接口文档v3.2.docx?downloadTokenUuid=280cbd41-0c2d-420b-7515-22b215389e55"},"documentType":"Text","editorConfig":{"callbackUrl":"http://10.10.13.55:8080/onlyOffice/save","lang":"zh-CN"},"type":"desktop"}
+
+```
+
+
 
