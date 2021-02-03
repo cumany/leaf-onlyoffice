@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title th:text="${document.title}"></title>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+        body {
+            background: #fff;
+            color: #333;
+            font-family: Arial, Tahoma,sans-serif;
+            font-size: 12px;
+            font-weight: normal;
+            height: 100%;
+            margin: 0;
+            overflow-y: hidden;
+            padding: 0;
+            text-decoration: none;
+        }
+
+        .form {
+            height: 100%;
+        }
+
+        div {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script type="text/javascript" th:src="${docServiceApiUrl}"></script>
+    <script type="text/javascript" language="javascript" th:inline="javascript">
+        let docEditor;
+        const innerAlert = function (message) {
+            if (console && console.log)
+                console.log(message);
+        };
+        const onReady = function () {
+            innerAlert("Document editor ready");
+        };
+
+        const onDocumentStateChange = function (event) {
+            const title = document.title.replace(/\*$/g, "");
+            document.title = title + (event.data ? "*" : "");
+        };
+
+        const onRequestEditRights = function () {
+            location.href = location.href.replace(RegExp("action=view\&?", "i"), "");
+        };
+
+        const onError = function (event) {
+            if (event)
+                innerAlert(event.data);
+        };
+
+        const onOutdatedVersion = function (event) {
+            location.reload(true);
+        };
+
+        const connectEditor = function () {
+            // 配置信息
+            docEditor = new DocsAPI.DocEditor("iFrameEditor",
+                {
+                    width: "100%",
+                    height: "100%",
+                    type: [[${type}]],
+                    documentType: [[${documentType}]],
+                    document: [[${document}]],
+                    editorConfig: [[${editorConfig}]],
+                    // https://api.onlyoffice.com/editors/config/events
+                    events: {
+                        "onAppReady": onReady,
+                        "onDocumentStateChange": onDocumentStateChange,
+                        'onRequestEditRights': onRequestEditRights,
+                        "onError": onError,
+                        "onOutdatedVersion": onOutdatedVersion
+                    }
+                });
+        };
+
+        if (window.addEventListener) {
+            window.addEventListener("load", connectEditor);
+        } else if (window.attachEvent) {
+            window.attachEvent("load", connectEditor);
+        }
+    </script>
+
+</head>
+<body>
+<div class="form">
+    <div id="iFrameEditor"></div>
+</div>
+</body>
+</html>

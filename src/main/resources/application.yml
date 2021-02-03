@@ -1,0 +1,8 @@
+only-office:
+  doc-service: http://10.11.11.36:9000
+#  doc-service: http://192.168.25.139:9000
+  # call-back-url: /onlyOffice/save
+  # temp-storage: reports
+spring:
+  profiles:
+    active: dev

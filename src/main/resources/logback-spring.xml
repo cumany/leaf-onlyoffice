@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!--
+        scan:当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
+        scanPeriod:设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。
+        当scan为true时，此属性生效。默认的时间间隔为1分钟。
+        debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。
+    -->
+
+    <!-- 上下文名称-->
+    <contextName>logback</contextName>
+
+    <!--参数 start-->
+    <!--存放路径-->
+    <property name="LOG_HOME" value="/logs/onlyOffice"/>
+    <!--文件最大大小 kb|mb|gb-->
+    <property name="log.max.file.size" value="100MB"/>
+    <!--日志最大大小 kb|mb|gb-->
+    <property name="log.max.total.size" value="10gb"/>
+    <!--存放天数-->
+    <property name="log.max.history" value="72"/>
+    <!-- 异步缓冲队列的深度,该值会影响性能.默认值为256 -->
+    <property name="queueSize" value="512"/>
+
+    <!-- 格式化输出：%d表示日期。%thread表示线程名。%-5level：级别从左显示5个字符宽度。%L行数 %msg：日志消息。%n是换行符 -->
+    <!--<property name="PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) [%thread] %-5level %c{36} [%L] : %msg%n"/>-->
+    <property name="PATTERN" value="%-12(%d{yyyy-MM-dd HH:mm:ss.SSS}) %-5level %c{20}[%L]: %msg%n"/>
+    <!-- 文件输出格式 带颜色 主要是用于开发阶段颜色-->
+    <!--<property name="COLOR_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %green([%thread]) %highlight(%-5level) %boldMagenta(%c{36} [%L]) : %cyan(%msg%n)"/>-->
+    <property name="COLOR_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %boldMagenta(%c{20}[%L]): %cyan(%msg%n)"/>
+
+    <!--参数 end-->
+
+    <!--输出方式 start-->
+    <!--控制台日志-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${COLOR_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <!--除了error级别的日志 其他的接收-->
+    <appender name="FILE_NORMAL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--创建日志的文件名 %i超过大小后自动增加 -->
+            <fileNamePattern>${LOG_HOME}/normal/web.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--最长保存天数-->
+            <maxHistory>${log.max.history}</maxHistory>
+            <!--文件大小 kb|mb|gb -->
+            <maxFileSize>${log.max.file.size}</maxFileSize>
+            <!--文件输出最大大小 超过了10gb会删除以前的日志-->
+            <totalSizeCap>${log.max.total.size}</totalSizeCap>
+        </rollingPolicy>
+        <!--打印规则-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+        <!--过滤-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+    </appender>
+
+    <!--Debug日志-->
+    <appender name="FILE_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--创建日志的文件名 %i超过大小后自动增加 -->
+            <fileNamePattern>${LOG_HOME}/debug/web-debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--最长保存天数-->
+            <maxHistory>${log.max.history}</maxHistory>
+            <!--文件大小 kb|mb|gb -->
+            <maxFileSize>${log.max.file.size}</maxFileSize>
+            <!--文件输出最大大小 超过了10gb会删除以前的日志-->
+            <totalSizeCap>${log.max.total.size}</totalSizeCap>
+        </rollingPolicy>
+        <!--打印规则-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <!--warn 日志-->
+    <appender name="FILE_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--滚动-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--创建日志的文件名 %i超过大小后自动增加 -->
+            <fileNamePattern>${LOG_HOME}/warn/web-warn.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--最长保存天数-->
+            <maxHistory>${log.max.history}</maxHistory>
+            <!--文件大小 kb|mb|gb -->
+            <maxFileSize>${log.max.file.size}</maxFileSize>
+            <!--文件输出最大大小 超过了10gb会删除以前的日志-->
+            <totalSizeCap>${log.max.total.size}</totalSizeCap>
+        </rollingPolicy>
+        <!--打印规则-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <!--Info 日志-->
+    <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--创建日志的文件名 %i超过大小后自动增加 -->
+            <fileNamePattern>${LOG_HOME}/info/web-info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--最长保存天数-->
+            <maxHistory>${log.max.history}</maxHistory>
+            <!--文件大小 kb|mb|gb -->
+            <maxFileSize>${log.max.file.size}</maxFileSize>
+            <!--文件输出最大大小 超过了10gb会删除以前的日志-->
+            <totalSizeCap>${log.max.total.size}</totalSizeCap>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--只接收error级别的日志-->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--创建日志的文件名 %i超过大小后自动增加 -->
+            <fileNamePattern>${LOG_HOME}/error/web-error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--最长保存天数-->
+            <maxHistory>${log.max.history}</maxHistory>
+            <!--文件大小 kb|mb|gb -->
+            <maxFileSize>${log.max.file.size}</maxFileSize>
+            <!--文件输出最大大小 超过了10gb会删除以前的日志-->
+            <totalSizeCap>${log.max.total.size}</totalSizeCap>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${PATTERN}</pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <!--输出方式 end-->
+
+
+    <!--异步输出 start-->
+    <!-- 异步的log片段必须在同步段后面，否则不起作用 -->
+    <appender name="ASYNC_FILE_NORMAL" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="FILE_NORMAL"/>
+    </appender>
+    <appender name="ASYNC_FILE_DEBUG" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>${queueSize}</queueSize>
+        <appender-ref ref="FILE_DEBUG"/>
+    </appender>
+    <appender name="ASYNC_FILE_INFO" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>${queueSize}</queueSize>
+        <appender-ref ref="FILE_INFO"/>
+    </appender>
+    <appender name="ASYNC_FILE_WARN" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>${queueSize}</queueSize>
+        <appender-ref ref="FILE_WARN"/>
+    </appender>
+    <appender name="ASYNC_FILE_ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>${queueSize}</queueSize>
+        <appender-ref ref="FILE_ERROR"/>
+    </appender>
+
+    <!--输出到数据库-->
+    <!--<appender name="MYSQL" class="ch.qos.logback.classic.db.DBAppender">-->
+        <!--<connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">-->
+            <!--<dataSource class="com.zaxxer.hikari.HikariDataSource">-->
+                <!--<driverClassName>com.mysql.cj.jdbc.Driver</driverClassName>-->
+                <!--<jdbcUrl>jdbc:mysql://localhost:3306/my_logs</jdbcUrl>-->
+                <!--<username>root</username>-->
+            <!--</dataSource>-->
+        <!--</connectionSource>-->
+    <!--</appender>-->
+
+    <!--异步输出 end-->
+    <!--配置 start-->
+    <!--
+       logger用来设置某一个包或者具体的某一个类的日志打印级别、以及指定<appender>
+       name:用来指定受此logger约束的某一个包或者具体的某一个类。
+       level:用来设置打印级别 默认继承上级（root）
+       additivity:是否向上级logger传递打印信息。默认是true。 如果设置了自定义内容建议设置为false，避免重复打印
+    -->
+    <logger name="com.ideayp.leaf" level="debug" additivity="true"/>
+
+    <!--默认开发配置 测试环境+开发环境. 多个使用逗号隔开-->
+    <springProfile name="dev,local">
+        <root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="FILE_NORMAL"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <!--<appender-ref ref="MYSQL"/>-->
+            <!--<appender-ref ref="FILE_DEBUG"/>-->
+            <!--<appender-ref ref="FILE_WARN"/>-->
+            <!--<appender-ref ref="FILE_INFO"/>-->
+        </root>
+    </springProfile>
+    <springProfile name="prod">
+        <root level="info">
+            <appender-ref ref="ASYNC_FILE_NORMAL"/>
+            <appender-ref ref="ASYNC_FILE_ERROR"/>
+            <!--<appender-ref ref="ASYNC_FILE_DEBUG"/>-->
+            <!--<appender-ref ref="ASYNC_FILE_WARN"/>-->
+            <!--<appender-ref ref="ASYNC_FILE_INFO"/>-->
+        </root>
+    </springProfile>
+    <!--配置 end-->
+</configuration>
