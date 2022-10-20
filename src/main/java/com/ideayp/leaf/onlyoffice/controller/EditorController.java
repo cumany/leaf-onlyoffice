@@ -1,7 +1,11 @@
 package com.ideayp.leaf.onlyoffice.controller;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import cn.hutool.jwt.JWTUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.ideayp.leaf.onlyoffice.dto.FileConfigDTO;
+import com.ideayp.leaf.onlyoffice.properties.OnlyProperties;
 import com.ideayp.leaf.onlyoffice.service.OnlyServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -24,11 +29,14 @@ import java.util.Scanner;
 @Slf4j
 public class EditorController {
 
+    private final OnlyProperties onlyProperties;
+
     private final OnlyServiceImpl onlyServiceImpl;
 
     @Autowired
-    public EditorController(OnlyServiceImpl onlyServiceImpl) {
+    public EditorController(OnlyServiceImpl onlyServiceImpl, OnlyProperties onlyProperties) {
         this.onlyServiceImpl = onlyServiceImpl;
+        this.onlyProperties = onlyProperties;
     }
 
     /**
@@ -36,11 +44,24 @@ public class EditorController {
      */
     @RequestMapping("/onlyOffice/edit")
     public ModelAndView edit(@RequestParam("url") String url, Model model) {
+        log.info("only office url:" + url);
         FileConfigDTO fileDTO = onlyServiceImpl.openEditConfig(url);
-        String s = JSONObject.toJSONString(fileDTO);
+        if (StrUtil.isNotBlank(onlyProperties.getKey())) {
+            log.info("only office set key: {}", onlyProperties.getKey());
+
+            fileDTO.getDocument().setKey(onlyProperties.getKey());
+
+            Map<String, Object> raw = JSONUtil.parseObj(fileDTO).getRaw();
+            String token = JWTUtil.createToken(raw, onlyProperties.getKey().getBytes());
+            log.info("only office token:" + token);
+
+            fileDTO.setToken(token);
+        }
+
+        String s = JSONUtil.toJsonStr(fileDTO);
         log.info("only office config:" + s);
-        JSONObject jsonObject = JSONObject.parseObject(s);
-        model.addAllAttributes(jsonObject);
+
+        model.addAllAttributes(JSONUtil.parseObj(fileDTO));
         return new ModelAndView("onlyOffice");
     }
 
