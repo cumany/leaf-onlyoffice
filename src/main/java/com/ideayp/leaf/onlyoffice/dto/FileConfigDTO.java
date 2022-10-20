@@ -48,13 +48,11 @@ public class FileConfigDTO implements Serializable {
     /**
      * 文档配置信息
      */
-    @JSONField(name = "document")
-    private FileDocument fileDocument;
+    private FileDocument document;
 
     /**
      * 编辑配置
      */
-    @JSONField(name = "editorConfig")
     private EditorConfig editorConfig;
 
     /**

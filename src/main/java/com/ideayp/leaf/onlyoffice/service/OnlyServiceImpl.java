@@ -109,7 +109,7 @@ public class OnlyServiceImpl implements OnlyService {
                 // 唯一有标示符
                 .key(key)
                 .build();
-        fileConfigDTO.setFileDocument(fileDocument);
+        fileConfigDTO.setDocument(fileDocument);
 
         // ==========编辑配置===============
         String callBackUrl = onlyProperties.getCallBackUrl();

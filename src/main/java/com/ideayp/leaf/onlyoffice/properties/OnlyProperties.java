@@ -33,4 +33,6 @@ public class OnlyProperties {
      * 临时存储位置
      */
     private String tempStorage = "reports";
+
+    private String key;
 }
